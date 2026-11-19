@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Sales Analytics - Project Presentation Deck</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #151c2e;
+            --bg-card-hover: #1e2842;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary: #38bdf8;
+            --success: #10b981;
+            --accent: #818cf8;
+            --warning: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* Top Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 7%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Container */
+        .slide-deck {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px 90px 80px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Typography */
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+        .badge-blue { background: rgba(56, 189, 248, 0.15); color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-purple { background: rgba(129, 140, 248, 0.15); color: var(--accent); border: 1px solid rgba(129, 140, 248, 0.3); }
+
+        h1.slide-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            background: linear-gradient(120deg, #ffffff 40%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.slide-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+
+        /* Card Elements */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 6px 0;
+        }
+        .metric-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* List Items */
+        ul.custom-list {
+            list-style: none;
+            padding: 0;
+        }
+        ul.custom-list li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 14px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+        ul.custom-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Tables */
+        table.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        table.styled-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+        table.styled-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        table.styled-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Speaker Note Box (Toggleable) */
+        .speaker-notes-box {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 900px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            z-index: 99;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .speaker-notes-box.show {
+            display: block;
+        }
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* Bottom Controls Bar */
+        .controls-bar {
+            height: 70px;
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: #0b0f19;
+            border-color: var(--primary);
+        }
+        .slide-counter {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        /* Print Media Styling for PDF Export */
+        @media print {
+            body { overflow: visible; height: auto; }
+            .controls-bar, .progress-container, .speaker-notes-box { display: none !important; }
+            .slide-deck { overflow: visible; height: auto; }
+            .slide {
+                position: relative !important;
+                display: flex !important;
+                opacity: 1 !important;
+                transform: none !important;
+                page-break-after: always;
+                height: 100vh;
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Slide Deck Container -->
+    <div class="slide-deck">
+
+        <!-- SLIDE 1: Title Slide -->
+        <div class="slide active" data-notes="Good morning/afternoon everyone. Today, I am excited to present my end-to-end data analytics project: 'Executive Sales Data Analysis & Interactive Dashboard'. In this project, I evaluated over 10,000 retail transactions across two years, calculated core business KPIs, and built an interactive Streamlit application and Power BI report.">
+            <div class="badge badge-blue">Data Analytics Portfolio Project</div>
+            <h1 class="slide-title" style="font-size: 3.4rem; margin-bottom: 20px;">
+                Executive Sales Data Analysis<br>& Interactive Dashboard
+            </h1>
+            <p class="slide-subtitle" style="font-size: 1.3rem; max-width: 800px;">
+                Uncovering commercial growth patterns, regional profitability, product margins, and customer trends from 10,000+ sales transactions.
+            </p>
+            <div class="grid-4" style="margin-top: 40px;">
+                <div class="card">
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">SCALE</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">10,500 Records</div>
+                    <div class="metric-sub">2 Years Transacted</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">PRIMARY TOOLS</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent);">Python & Streamlit</div>
+                    <div class="metric-sub">Pandas, Plotly, OpenPyXL</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">ENTERPRISE BI</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--warning);">Power BI + DAX</div>
+                    <div class="metric-sub">Star Schema Data Model</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">AUTOMATION</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: var(--success);">7-Tab Excel</div>
+                    <div class="metric-sub">Automated Workbook</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Business Context & Problem Statement -->
+        <div class="slide" data-notes="Modern commercial operations often focus on gross revenue but lack real-time visibility into net profit margins and discount erosion. Relying on static, manual spreadsheets causes reporting lag. This project creates an automated, self-service BI platform that eliminates lag and highlights true profit drivers.">
+            <div class="badge badge-purple">Business Context</div>
+            <h1 class="slide-title">Problem Statement & Industry Challenge</h1>
+            <p class="slide-subtitle">Why traditional sales tracking fails modern executive teams.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: #f87171; margin-bottom: 15px;">⚠️ Traditional Reporting Pitfalls</h3>
+                    <ul class="custom-list">
+                        <li><strong>Gross Sales Illusion:</strong> Companies focus only on total sales without factoring in COGS and discounts, masking unprofitable orders.</li>
+                        <li><strong>Reporting Latency:</strong> Manual monthly Excel preparation takes 10–15 hours, resulting in stale business decisions.</li>
+                        <li><strong>Territorial Blindspots:</strong> Inability to compare territory sales with regional profit margins in real-time.</li>
+                        <li><strong>Inflexible Static Views:</strong> Lack of drill-downs for date ranges, specific categories, or product segments.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--success); margin-bottom: 15px;">💡 The Proposed Analytics Solution</h3>
+                    <ul class="custom-list">
+                        <li><strong>Automated Data Pipeline:</strong> Cleans, deduplicates, and engineers temporal features in seconds.</li>
+                        <li><strong>True Margin Transparency:</strong> Tracks unit costs, tiered discounts, and exact net profit percentages.</li>
+                        <li><strong>Interactive Self-Service:</strong> Instant web-based filtering across dates, territories, and product catalogs.</li>
+                        <li><strong>Multi-Channel Delivery:</strong> Streamlit web dashboard, Power BI visuals, and 7-tab Excel workbooks.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Objectives & Scope -->
+        <div class="slide" data-notes="Our core objectives were twofold: First, build a clean, reliable data processing pipeline using Python and Pandas. Second, surface strategic insights through interactive KPI scorecards, visual trend charts, and self-service filters for leadership.">
+            <div class="badge badge-blue">Project Scope</div>
+            <h1 class="slide-title">Core Business Objectives</h1>
+            <p class="slide-subtitle">Clear technical and business goals established for this engagement.</p>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🧹</div>
+                    <h3 style="margin-bottom: 10px; color: var(--primary);">1. Data Engineering</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Process 10,000+ raw records, eliminate duplicate entries, impute missing values, and structure date hierarchies.
+                    </p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
+                    <h3 style="margin-bottom: 10px; color: var(--success);">2. Commercial EDA</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Uncover monthly and yearly growth trajectories, Q4 seasonality, and category-level profit margin variations.
+                    </p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🖥️</div>
+                    <h3 style="margin-bottom: 10px; color: var(--accent);">3. Interactive BI</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Build a responsive Streamlit dashboard with KPI metric cards, dynamic Plotly charts, and custom CSV upload support.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Architecture & Tech Stack -->
+        <div class="slide" data-notes="To ensure enterprise readiness, the architecture leverages Python with Pandas for data wrangling, Streamlit and Plotly for the responsive cloud/web dashboard, automated multi-sheet Excel generation, and Microsoft Power BI for enterprise reporting.">
+            <div class="badge badge-purple">System Architecture</div>
+            <h1 class="slide-title">Modern End-to-End Analytics Stack</h1>
+            <p class="slide-subtitle">Scalable, modular, and beginner-to-professional architecture.</p>
+            
+            <div class="grid-4">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🐍</div>
+                    <h3 style="color: var(--primary);">Python 3.10+</h3>
+                    <p class="metric-sub" style="margin-top: 8px;">Core language powering data generation, cleaning, and orchestration.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🐼</div>
+                    <h3 style="color: var(--accent);">Pandas & NumPy</h3>
+                    <p class="metric-sub" style="margin-top: 8px;">Vectorized data wrangling, deduplication, and KPI aggregations.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">📊</div>
+                    <h3 style="color: var(--success);">Plotly & Streamlit</h3>
+                    <p class="metric-sub" style="margin-top: 8px;">Dynamic web UI with interactive hover states and real-time filtering.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">⚡</div>
+                    <h3 style="color: var(--warning);">Power BI & Excel</h3>
+                    <p class="metric-sub" style="margin-top: 8px;">Enterprise DAX modeling and 7-tab audit-ready spreadsheets.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Dataset Schema -->
+        <div class="slide" data-notes="The dataset covers 10,500 transactions across 5 key geographic regions and 4 major categories. Each record tracks unit costs, tiered volume discounts, and net profit margins, allowing us to accurately simulate real-world financial performance.">
+            <div class="badge badge-blue">Data Dictionary</div>
+            <h1 class="slide-title">Dataset Schema & Transaction Dimensions</h1>
+            <p class="slide-subtitle">Granular commercial tracking across 13 core business attributes.</p>
+            
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Type</th>
+                        <th>Business Role</th>
+                        <th>Sample Record</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Order ID</strong></td>
+                        <td>String</td>
+                        <td>Unique transactional identifier</td>
+                        <td><code>ORD-2024-101405</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Date</strong></td>
+                        <td>Date</td>
+                        <td>Temporal tracking (2024–2025)</td>
+                        <td><code>2024-03-15</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer ID</strong></td>
+                        <td>String</td>
+                        <td>Repeat buyer cohort tracking (1,590+ IDs)</td>
+                        <td><code>CUST-10427</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Product & Category</strong></td>
+                        <td>String</td>
+                        <td>Catalog taxonomy (Tech, Furniture, Supplies)</td>
+                        <td><code>Apple MacBook Air M2 (Tech)</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Region & City</strong></td>
+                        <td>String</td>
+                        <td>Territorial sales routing (5 Regions)</td>
+                        <td><code>West, San Francisco</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sales, Cost, Profit</strong></td>
+                        <td>Float ($)</td>
+                        <td>Financial metrics after tiered volume discounts</td>
+                        <td><code>Sales: $2,997 | Profit: $837</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 6: Data Cleaning & Feature Engineering -->
+        <div class="slide" data-notes="Data quality was our first milestone. We developed an automated script, data_cleaning.py, that handles null checks, removes duplicates, and standardizes date formats. Furthermore, we engineered critical business dimensions like Year-Month, Quarters, and transaction-level Profit Margins.">
+            <div class="badge badge-green">Data Engineering</div>
+            <h1 class="slide-title">Data Cleaning & Feature Engineering</h1>
+            <p class="slide-subtitle">Transforming raw transaction logs into an analytics-ready model.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 12px;">🛠️ Data Cleaning Steps</h3>
+                    <ul class="custom-list">
+                        <li><strong>Deduplication:</strong> Automated hash check on <code>Order ID</code> to eliminate duplicates.</li>
+                        <li><strong>Type Casting:</strong> Currency strings parsed to <code>float64</code>; dates to <code>datetime64</code>.</li>
+                        <li><strong>Missing Value Treatment:</strong> Filled numerical nulls with column median; categorical with mode.</li>
+                        <li><strong>Outlier Validation:</strong> Confirmed positive unit prices and non-negative unit quantities.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--accent); margin-bottom: 12px;">⚙️ Engineered Business Features</h3>
+                    <ul class="custom-list">
+                        <li><strong>Temporal Dimensions:</strong> <code>Year</code>, <code>Month</code>, <code>Year_Month</code>, <code>Quarter</code>, <code>Day_of_Week</code>.</li>
+                        <li><strong>Profit Margin %:</strong> <code>(Profit / Sales) * 100</code> calculated per transaction.</li>
+                        <li><strong>Average Order Value (AOV):</strong> <code>Total Revenue / Distinct Order Count</code>.</li>
+                        <li><strong>Volume Tier Flag:</strong> Standard (1–4), Bulk (5–9), Enterprise Wholesale (10+).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Executive KPI Scorecard -->
+        <div class="slide" data-notes="Here is our executive scorecard. Over the two-year period, the business generated $8.42M in gross sales and $2.72M in net profit, delivering a strong average profit margin of 32.28%. With 10,500 fulfilled orders and an Average Order Value of $802, the commercial foundation shows steady, highly profitable operations.">
+            <div class="badge badge-green">Commercial Performance</div>
+            <h1 class="slide-title">Executive KPI Scorecard (2-Year Performance)</h1>
+            <p class="slide-subtitle">High-level commercial health metrics across 10,500 transactions.</p>
+            
+            <div class="grid-5" style="margin-bottom: 25px;">
+                <div class="card">
+                    <div class="metric-sub">TOTAL REVENUE</div>
+                    <div class="metric-value">$8.42M</div>
+                    <div class="metric-sub" style="color: var(--success);">▲ Gross Sales</div>
+                </div>
+                <div class="card">
+                    <div class="metric-sub">TOTAL NET PROFIT</div>
+                    <div class="metric-value" style="color: var(--success);">$2.72M</div>
+                    <div class="metric-sub">Operating Income</div>
+                </div>
+                <div class="card">
+                    <div class="metric-sub">PROFIT MARGIN</div>
+                    <div class="metric-value" style="color: var(--accent);">32.28%</div>
+                    <div class="metric-sub">Target: >25%</div>
+                </div>
+                <div class="card">
+                    <div class="metric-sub">TOTAL ORDERS</div>
+                    <div class="metric-value">10,500</div>
+                    <div class="metric-sub">21,733 Units Sold</div>
+                </div>
+                <div class="card">
+                    <div class="metric-sub">AVG ORDER VALUE</div>
+                    <div class="metric-value" style="color: var(--warning);">$802.32</div>
+                    <div class="metric-sub">Per Invoice</div>
+                </div>
+            </div>
+
+            <div class="card" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+                <p style="font-size: 1.05rem; line-height: 1.6; color: #e2e8f0;">
+                    💡 <strong>Executive Summary:</strong> The commercial operation maintains healthy margins well above industry standard (32.28%), with balanced customer acquisition (1,597 repeat active customers) and minimal return friction.
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Monthly Trends & Q4 Seasonality -->
+        <div class="slide" data-notes="When looking at the monthly trend, we observe consistent performance through Q1 to Q3 averaging $260K per month. However, in Q4, revenue jumps by over 120% to reach $600K to $660K per month. Crucially, despite promotional discounts, net profit margin remained resilient at 32%, proving that volume expansion did not cannibalize profitability.">
+            <div class="badge badge-blue">Time Series Insights</div>
+            <h1 class="slide-title">Monthly Trajectory & Q4 Seasonality Surge</h1>
+            <p class="slide-subtitle">Tracking month-over-month trajectory and holiday peaks.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">📊 Key Trend Observations</h3>
+                    <ul class="custom-list">
+                        <li><strong>Stable Baseline (Q1–Q3):</strong> Consistent run-rate averaging <strong>$250K–$290K</strong> monthly revenue.</li>
+                        <li><strong>Q4 Surge (Oct–Dec):</strong> Explosive 120%+ surge pushing monthly revenue past <strong>$600,000–$660,000</strong>.</li>
+                        <li><strong>Holiday Catalysts:</strong> Corporate budget flushing and seasonal holiday demand drive wholesale purchasing.</li>
+                        <li><strong>Margin Stability:</strong> Profit margin stays locked between <strong>31.9% and 33.4%</strong> even during discount periods.</li>
+                    </ul>
+                </div>
+                <div class="card" style="background: rgba(56, 189, 248, 0.03);">
+                    <h3 style="color: var(--accent); margin-bottom: 15px;">📈 2024 vs 2025 Comparative</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Period</th><th>Monthly Avg Sales</th><th>Avg Orders</th><th>Margin %</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Q1 (Jan–Mar)</strong></td><td>$268,526</td><td>335</td><td>32.20%</td></tr>
+                            <tr><td><strong>Q2 (Apr–Jun)</strong></td><td>$241,848</td><td>324</td><td>32.48%</td></tr>
+                            <tr><td><strong>Q3 (Jul–Sep)</strong></td><td>$282,109</td><td>350</td><td>32.28%</td></tr>
+                            <tr><td><strong>Q4 (Oct–Dec)</strong></td><td><strong style="color: var(--success);">$616,193</strong></td><td><strong style="color: var(--success);">750</strong></td><td>32.27%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Category & Product Performance -->
+        <div class="slide" data-notes="Our product portfolio analysis reveals an interesting strategic dynamic: Technology is our primary revenue engine, contributing nearly 58% of top-line sales. However, Office Supplies is our margin champion with a 41.66% profit margin. The top individual revenue drivers are Dell XPS 15, ThinkPad X1, and Herman Miller Ergonomic chairs.">
+            <div class="badge badge-purple">Product Analytics</div>
+            <h1 class="slide-title">Category Revenue Share vs Profit Margins</h1>
+            <p class="slide-subtitle">Balancing top-line volume with bottom-line profitability.</p>
+            
+            <div class="grid-4" style="margin-bottom: 25px;">
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">TECHNOLOGY</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--primary);">$4.88M</div>
+                    <div style="color: var(--success); font-weight: 600;">57.97% Revenue Share</div>
+                    <div class="metric-sub">Margin: 28.41%</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">OFFICE FURNITURE</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent);">$2.56M</div>
+                    <div style="color: var(--success); font-weight: 600;">30.44% Revenue Share</div>
+                    <div class="metric-sub">Margin: 36.79%</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">OFFICE SUPPLIES</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--success);">$489K</div>
+                    <div style="color: var(--warning); font-weight: 600;">5.81% Revenue Share</div>
+                    <div class="metric-sub" style="color: var(--success); font-weight: 700;">★ 41.66% High Margin!</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">HOME & LIVING</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--warning);">$486K</div>
+                    <div style="color: var(--warning); font-weight: 600;">5.77% Revenue Share</div>
+                    <div class="metric-sub">Margin: 37.81%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4 style="margin-bottom: 10px; color: var(--text-muted);">🏆 Top 3 Flagship Products by Revenue:</h4>
+                <p style="font-size: 1rem; color: #e2e8f0;">
+                    1. <strong>Dell XPS 15 Laptop:</strong> $987,915 Revenue (668 units) | 2. <strong>Lenovo ThinkPad X1:</strong> $823,890 Revenue (643 units) | 3. <strong>Herman Miller Chair:</strong> $778,625 Revenue (633 units).
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Regional Commercial Distribution -->
+        <div class="slide" data-notes="Geographically, revenue is remarkably well-balanced across all five territories—each generating between $1.57M and $1.73M. This geographic diversification protects the business from regional downturns. On the payment front, cashless transactions account for over 82% of sales, highlighting customer trust in our digital checkout systems.">
+            <div class="badge badge-green">Territory & Channel Analytics</div>
+            <h1 class="slide-title">Regional Distribution & Payment Channels</h1>
+            <p class="slide-subtitle">High territorial stability and digital checkout dominance.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">🌍 Regional Sales Breakdown</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Region</th><th>Revenue</th><th>Net Profit</th><th>Margin %</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>West</strong></td><td>$1,735,138</td><td>$553,688</td><td>31.91%</td></tr>
+                            <tr><td><strong>South</strong></td><td>$1,720,137</td><td>$560,102</td><td>32.56%</td></tr>
+                            <tr><td><strong>North</strong></td><td>$1,718,716</td><td>$554,310</td><td>32.25%</td></tr>
+                            <tr><td><strong>Central</strong></td><td>$1,675,353</td><td>$540,523</td><td>32.26%</td></tr>
+                            <tr><td><strong>East</strong></td><td>$1,574,979</td><td>$510,474</td><td>32.41%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--accent); margin-bottom: 15px;">💳 Payment Mode Preferences</h3>
+                    <ul class="custom-list">
+                        <li><strong>Credit Card (42%):</strong> Dominates corporate and wholesale high-ticket purchases.</li>
+                        <li><strong>Debit Card (22%):</strong> Preferred by small business buyers.</li>
+                        <li><strong>UPI / Digital Wallets (18%):</strong> Rapidly growing friction-free checkout method.</li>
+                        <li><strong>Net Banking (12%):</strong> Standard for invoice clearances.</li>
+                        <li><strong>Cash on Delivery (6%):</strong> Minimal COD eliminates cash handling risk.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Streamlit Dashboard Demo -->
+        <div class="slide" data-notes="To make these insights accessible, I built a web application using Streamlit and Plotly. The dashboard features responsive KPI cards, dynamic slicers for date ranges, regions, and categories, and an interactive data explorer with export capabilities. Stakeholders can even upload their own sales CSV to analyze it on the fly.">
+            <div class="badge badge-blue">Interactive Web Application</div>
+            <h1 class="slide-title">Streamlit Executive Dashboard Showcase</h1>
+            <p class="slide-subtitle">Self-service data portal built with Streamlit, Plotly, and custom CSS.</p>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 10px;">🎯 Control Panel</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Interactive sidebar with Date Range sliders, Region multiselect, Category filters, and Product dropdowns.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--success); margin-bottom: 10px;">📊 Dynamic Plotly Charts</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Dual-axis revenue line/bar charts, category horizontal bars, regional charts, and profit scatter plots.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">📂 Custom CSV Upload</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Stakeholders can drag-and-drop custom CSV files directly into the UI for instant automated analysis and export.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px; background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2);">
+                <p style="font-size: 1rem; color: #e2e8f0;">
+                    🚀 <strong>Live Local Launch:</strong> Run <code>streamlit run dashboard/app.py</code> or simply double-click <code>run_dashboard.bat</code> on any laptop!
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Power BI & Multi-Sheet Excel Reports -->
+        <div class="slide" data-notes="Beyond the web app, we prepared an enterprise Power BI blueprint documented in PowerBI_Guide.md with full DAX measures, and built an automated Python Excel export script that generates a 7-tab audit-ready workbook for finance and management teams.">
+            <div class="badge badge-purple">Enterprise Reporting</div>
+            <h1 class="slide-title">Power BI & Multi-Sheet Excel Deliverables</h1>
+            <p class="slide-subtitle">Multi-channel reporting designed for diverse stakeholder preferences.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--warning); margin-bottom: 15px;">📊 Microsoft Power BI Blueprint</h3>
+                    <ul class="custom-list">
+                        <li><strong>Star Schema Modeling:</strong> Fact table with dimensional filters.</li>
+                        <li><strong>Dedicated DAX Measures:</strong> Safe <code>DIVIDE</code> formulas, YoY growth, and dynamic status indicators.</li>
+                        <li><strong>Slicer Setup:</strong> Between-date sliders, region tile slicers, and Top-N product ranking filters.</li>
+                        <li><strong>Step-by-Step Guide:</strong> Documented in <code>outputs/PowerBI_Guide.md</code>.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--success); margin-bottom: 15px;">📑 Automated 7-Sheet Excel Workbook</h3>
+                    <ul class="custom-list">
+                        <li><strong>Tab 1:</strong> <code>KPI Summary</code> (Executive scorecard)</li>
+                        <li><strong>Tab 2:</strong> <code>Monthly Sales</code> (MoM trend metrics)</li>
+                        <li><strong>Tab 3:</strong> <code>Category Analysis</code> (Volume and margins)</li>
+                        <li><strong>Tab 4:</strong> <code>Regional Analysis</code> (Territorial metrics)</li>
+                        <li><strong>Tab 5:</strong> <code>Top Products</code> (Best sellers leaderboard)</li>
+                        <li><strong>Tabs 6 & 7:</strong> <code>Cleaned Data</code> and <code>Raw Sales Data</code> audit trail.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Strategic Business Recommendations -->
+        <div class="slide" data-notes="Based on these insights, we recommend three strategic actions: First, bundle high-revenue technology hardware with high-margin office consumables. Second, optimize supply chain inventory 60 days ahead of the proven Q4 sales surge. Third, launch dedicated account management programs for the top 100 enterprise buyers who drive disproportionate recurring profit.">
+            <div class="badge badge-green">Actionable Strategy</div>
+            <h1 class="slide-title">Strategic Business Recommendations</h1>
+            <p class="slide-subtitle">Translating data analytics into profitable business action.</p>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📦</div>
+                    <h3 style="color: var(--primary); margin-bottom: 10px;">1. Product Bundling</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Bundle high-ticket Technology items (Laptops, Phones) with high-margin Office Supplies (41.6% margin) to maximize average basket profit.
+                    </p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🚢</div>
+                    <h3 style="color: var(--success); margin-bottom: 10px;">2. Q4 Supply Buffer</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Begin safety stock procurement 60 days ahead of October to avoid stockouts during the proven 120% holiday sales surge.
+                    </p>
+                </div>
+                <div class="card">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🤝</div>
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">3. Key Account Retention</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">
+                        Create VIP loyalty tiers for top repeat customers who account for over 35% of cumulative profit, offering dedicated terms.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Conclusion & Q&A -->
+        <div class="slide" data-notes="To summarize, this project demonstrates end-to-end data analytics competency—from data cleansing and exploratory modeling in Python, to interactive business intelligence in Streamlit and Power BI, concluding with concrete business value recommendations. Thank you for your time, and I welcome any questions or feedback!">
+            <div class="badge badge-blue">Project Summary</div>
+            <h1 class="slide-title">Conclusion & Learning Outcomes</h1>
+            <p class="slide-subtitle">Ready to showcase for data analyst portfolios and technical interviews.</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--success); margin-bottom: 12px;">✅ Project Accomplishments</h3>
+                    <ul class="custom-list">
+                        <li>Analyzed 10,500+ commercial records with automated Python cleaning.</li>
+                        <li>Uncovered $8.42M Revenue and 32.28% Net Margin drivers.</li>
+                        <li>Delivered interactive Streamlit web app with dynamic Plotly charts.</li>
+                        <li>Prepared enterprise Power BI guide and 7-sheet Excel reports.</li>
+                    </ul>
+                </div>
+                <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                    <h2 style="font-size: 2.2rem; color: var(--primary); margin-bottom: 10px;">Thank You!</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Questions, Feedback & Discussion</p>
+                    <div>
+                        <button class="nav-btn" onclick="window.print()" style="margin-right: 10px;">🖨️ Export PDF Slides</button>
+                        <button class="nav-btn" onclick="toggleNotes()">🎙️ Speaker Notes (S)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toggleable Speaker Notes Overlay -->
+    <div class="speaker-notes-box" id="speakerNotesBox">
+        <div class="notes-header">
+            <span>🎙️ Speaker Notes (इंग्रजी संवाद & मार्गदर्शन)</span>
+            <span style="cursor: pointer;" onclick="toggleNotes()">✕ CLOSE (ESC)</span>
+        </div>
+        <div id="notesContent">Loading notes...</div>
+    </div>
+
+    <!-- Bottom Controls Navigation Bar -->
+    <div class="controls-bar">
+        <div>
+            <span style="font-weight: 700; color: var(--primary); font-size: 1rem;">Sales Analytics Portfolio</span>
+            <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 10px;">Press [←] [→] or [Space]</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button class="nav-btn" onclick="prevSlide()">◀ Previous</button>
+            <span class="slide-counter" id="slideCounter">Slide 1 / 14</span>
+            <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button class="nav-btn" onclick="toggleNotes()" title="View what to say during interview">🎙️ Notes (S)</button>
+            <button class="nav-btn" onclick="toggleFullScreen()" title="Full Screen Presentation">⛶ Fullscreen</button>
+            <button class="nav-btn" onclick="window.print()" title="Save slides as PDF">🖨️ PDF</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const speakerNotesBox = document.getElementById('speakerNotesBox');
+        const notesContent = document.getElementById('notesContent');
+
+        function updateSlide() {
+            slides.forEach((s, idx) => {
+                s.classList.remove('active');
+                if (idx === currentSlide) {
+                    s.classList.add('active');
+                }
+            });
+
+            // Update Progress Bar & Counter
+            const progressPct = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = progressPct + '%';
+            slideCounter.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+
+            // Update Speaker Notes
+            const activeSlide = slides[currentSlide];
+            const notes = activeSlide.getAttribute('data-notes') || 'No speaker notes for this slide.';
+            notesContent.innerHTML = notes;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function toggleNotes() {
+            speakerNotesBox.classList.toggle('show');
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Keyboard Controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                prevSlide();
+            } else if (e.key.toLowerCase() === 's') {
+                toggleNotes();
+            } else if (e.key === 'Escape') {
+                speakerNotesBox.classList.remove('show');
+            }
+        });
+
+        // Initialize first slide
+        updateSlide();
+    </script>
+</body>
+</html>
